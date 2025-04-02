@@ -1,6 +1,5 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+// functions.c
+#include "functions.h"
 
 /* Notice that each base64 character is indexed by the value it is encoding.
  * I.e. base64Table[000111] = base64Table[7] = "H".
@@ -9,8 +8,10 @@ const char base64Table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
 
 // First we will convert our input string to raw bytes
 unsigned char hexCharToBytes(char c) {
+	// Here we are using subtracting the ascii representation to get numeric value of char
 	if ('0' <= c && c <= '9') return c - '0';
 	if ('a' <= c && c <= 'f') return c - 'a' + 10;
+	// Account for input being capital vs lowercase
 	if ('A' <= c && c <= 'F') return c - 'A' + 10;
 	return 0;
 }
@@ -25,9 +26,13 @@ unsigned char* hexToBytes(const char* hex, size_t* out_len){
 		return NULL;
 	}
 
+	// Iterate over every character input of hex and add to an array of bytes
 	for (size_t i = 0; i < *out_len; i++){
+		// This takes the first nibble input
 		unsigned char high = hexCharToBytes(hex[2*i]);
+		// This takes the second nibble
 		unsigned char low = hexCharToBytes(hex[2*i + 1]);
+		// Now we combine the two nibbles extracted into one byte
 		bytes[i] = (high << 4) | low;
 	}
 	return bytes;
@@ -96,64 +101,17 @@ char* base64_encode(const unsigned char* data, size_t input_length){
 	return encoded;
 }
 
-int main(int argc, char* argv[]) {
-	char* input = NULL;
-	if (argc < 2) {
-		fprintf(stderr, "Usage:\n");
-		fprintf(stderr, " %s <string>\n", argv[0]);
-		fprintf(stderr, " %s -f <filename>\n", argv[0]);
-		return 1;
+// Convert raw bytes to a string showing its Hex
+char* bytesToHex(const unsigned char* bytes, size_t len) {
+	char* hexStr = malloc(len * 2 + 1); // +1 for null terminator
+	if (!hexStr) {
+		perror("malloc");
+		exit(1);
+	}
+	for (size_t i = 0; i < len; i++){
+		sprintf(hexStr + i * 2, "%02x", bytes[i]);
 	}
 
-
-	// If -f or --file is provided, then read the file for input
-	if ((strcmp(argv[1], "-f") == 0) || (strcmp(argv[1], "--file") == 0)) {
-		if (argc < 3) {
-			fprintf(stderr, "Filename missing after -f\n");
-			return 1;
-		}
-
-		const char *filename = argv[2];
-		FILE *file = fopen(filename, "rb");
-
-		if (!file) {
-			fprintf(stderr, "Error opening file!\n");
-			return 1;
-		}
-
-		// Determine file size to allocate memory
-		fseek(file, 0, SEEK_END);
-		long length = ftell(file);
-		rewind(file);
-
-		// Allocate memory for file contents
-		input = malloc(length + 1);
-		if (!input) {
-			fprintf(stderr, "Memory allocation failed\n");
-			fclose(file);
-			return 1;
-		}
-
-		// Read file into buffer
-		fread(input, 1, length, file);
-		input[length] = '\0';
-		fclose(file);
-
-	} else {
-		// If no file provided, we just read the string after
-		input = argv[1];
-	}
-	
-	size_t len = strlen(input);
-	unsigned char* raw_input = hexToBytes(input, &len);	
-	char* b64 = base64_encode(raw_input, len);
-
-	printf("%s\n", b64);
-	free(b64);
-
-	if ((strcmp(argv[1], "-f") == 0) || (strcmp(argv[1], "--file") == 0)) {
-		// Free the memory allocated
-		free(input);
-	}
-	return 0;
+	hexStr[len * 2] = '\0';
+	return hexStr;
 }
