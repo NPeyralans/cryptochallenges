@@ -141,4 +141,37 @@ int score_text(const unsigned char *text, size_t len) {
     return score;
 }
 
+decodedXOR decodeXOR(const char* inputString){
+	decodedXOR result;
+	size_t len;
+	unsigned char* inputBytes = hexToBytes(inputString, &len);
+	int bestScore = -100000;
+	unsigned char bestKey = 0;
+	unsigned char* bestCandidate = NULL;
 
+	for (unsigned int key = 0; key < 256; key++){
+		unsigned char* candidate = malloc(len+1);
+		if (!candidate){
+			perror("malloc");
+			exit(EXIT_FAILURE);
+		}
+
+		for (size_t i = 0; i < len; i++){
+			candidate[i] = inputBytes[i] ^ key;
+		}
+		candidate[len] = '\0';
+
+		int score = score_text(candidate, len);
+		if (score > bestScore){
+			bestScore = score;
+			bestKey = (unsigned char) key;
+			if (bestCandidate) free(bestCandidate);
+			bestCandidate = candidate;
+		} else {
+			free(candidate);
+		}
+	}
+	result.key = bestKey;
+	result.decodedMessage = bestCandidate;
+	return result;
+}
