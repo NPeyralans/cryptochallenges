@@ -30,28 +30,11 @@ int main(int argc, char* argv[]) {
 	// printf("hexToBytes(input1): %02x\n", bytes1);
 	// printf("hexToBytes(input2): %02x\n", bytes2);
 
-	unsigned char* result = malloc(len1 + 1);
-
-	if (result == NULL) {
-		perror("malloc");
-		free(bytes1);
-		free(bytes2);
-		return 1;
-	}
-
-	for (size_t i = 0; i < len1; i++){
-		result[i] = bytes1[i] ^ bytes2[i];
-	}
-
-	// I need to convert the result of the XOR operation back into a string
-	char* output = bytesToHex(result, len1);
-	printf("%s\n", output);
+	char* return_string = xor(bytes1, bytes2, len1);
+	printf("Result: %s\n", return_string);
 
 	free(bytes1);
 	free(bytes2);
-	free(result);
-	//printf("bytes: %s\n", bytes);
-	//printf("bytes: %c\n", bytes);
-	//printf("bytes: %02x\n", bytes);
+
 	return 0;
 }

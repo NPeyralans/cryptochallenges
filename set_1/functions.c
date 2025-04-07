@@ -19,6 +19,10 @@ unsigned char hexCharToBytes(char c) {
 unsigned char* hexToBytes(const char* hex, size_t* out_len){
 	size_t hex_length = strlen(hex);
 
+	if (hex_length % 2 != 0){
+		fprintf(stderr, "The input hex string must contain an even number of bytes!\n");
+	}
+
 	*out_len = hex_length / 2;
 	unsigned char* bytes = malloc(*out_len);
 	if (!bytes) {
@@ -115,3 +119,26 @@ char* bytesToHex(const unsigned char* bytes, size_t len) {
 	hexStr[len * 2] = '\0';
 	return hexStr;
 }
+
+// Score the candidate plaintext based on a simple heuristic.
+// Letters and spaces get bonus points; non-printable characters get penalized.
+int score_text(const unsigned char *text, size_t len) {
+    int score = 0;
+    for (size_t i = 0; i < len; i++) {
+        unsigned char c = text[i];
+        if (c >= 'a' && c <= 'z') {
+            score += 2;
+        } else if (c >= 'A' && c <= 'Z') {
+            score += 2;
+        } else if (c == ' ') {
+            score += 3;
+        } else if (c >= 32 && c <= 126) { // Other printable characters.
+            score += 1;
+        } else {
+            score -= 5; // Penalty for non-printable characters.
+        }
+    }
+    return score;
+}
+
+
