@@ -19,6 +19,8 @@ unsigned char hexCharToBytes(char c) {
 unsigned char* hexToBytes(const char* hex, size_t* out_len){
 	size_t hex_length = strlen(hex);
 
+	/* printf("Length of line in hexToBytes: %zu\n", hex_length); */
+
 	if (hex_length % 2 != 0){
 		fprintf(stderr, "The input hex string must contain an even number of bytes!\n");
 	}
@@ -143,6 +145,7 @@ int score_text(const unsigned char *text, size_t len) {
 
 decodedXOR decodeXOR(const char* inputString){
 	decodedXOR result;
+	result.cipher = inputString;
 	size_t len;
 	unsigned char* inputBytes = hexToBytes(inputString, &len);
 	int bestScore = -100000;
@@ -173,5 +176,6 @@ decodedXOR decodeXOR(const char* inputString){
 	}
 	result.key = bestKey;
 	result.decodedMessage = bestCandidate;
+	result.score = bestScore;
 	return result;
 }

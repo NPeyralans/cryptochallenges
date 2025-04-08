@@ -6,9 +6,13 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define MAX_LINE 1024 
+
 typedef struct {
+	const unsigned char* cipher;
 	unsigned char key;
 	unsigned char* decodedMessage;
+	int score;
 } decodedXOR;
 
 unsigned char hexCharToBytes(char c);

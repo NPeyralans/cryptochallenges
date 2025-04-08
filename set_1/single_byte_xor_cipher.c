@@ -4,6 +4,7 @@ int main(int argc, char* argv[]){
 	// First we will take the input and translate it to bytes
 	if (argc < 2){
 		fprintf(stderr, "Usage: <string>\n");
+		return 1;
 	}
 
 	const char* input = argv[1];
