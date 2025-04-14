@@ -23,5 +23,6 @@ char* xor(unsigned char* bytes1, unsigned char* bytes2, size_t len);
 unsigned char* createKeyString(char c, size_t len);
 int score_text(const unsigned char* text, size_t len);
 decodedXOR decodeXOR(const char* input);
+char* file_to_plaintext(const char* filename);
 
 #endif

@@ -1,4 +1,4 @@
-#include "functions.h"
+#include "../programs/functions.h"
 
 int main(int argc, char* argv[]){
 	if (argc < 2){

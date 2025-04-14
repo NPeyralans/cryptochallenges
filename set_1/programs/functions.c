@@ -179,3 +179,46 @@ decodedXOR decodeXOR(const char* inputString){
 	result.score = bestScore;
 	return result;
 }
+
+char* file_to_plaintext(const char* filename){
+	// Make sure file is opened in binary form "b"
+	FILE *fp = fopen(filename, "rb");
+	if (!fp) {
+		perror("Failed to open file\n");
+		return NULL;
+	}
+	
+	fseek(fp, 0, SEEK_END);
+	long length = ftell(fp);
+	rewind(fp);
+
+	unsigned char* buffer = malloc(length+1);
+	if (!buffer){
+		perror("Memory allocation failed!\n");
+		fclose(fp);
+		return NULL;
+	}
+
+	// fread(void *ptr, size_t size, size_t count, FILE *stream)
+	// This takes a pointer to where the data read will be saved
+	// the size of each item to be read in bytes
+	// The number of items to be read
+	// And the file stream to read from
+	size_t bytesRead = fread(buffer, 1, length, fp);
+	if (bytesRead != length){
+		perror("Failed to read the entire file");
+		free(buffer);
+		fclose(fp);
+		return NULL;
+	}
+	/* for (long i = 0; i < length; i++){ */
+	/* 	printf("%02x", buffer[i]); */	
+	/* } */
+	/* printf("\n"); */
+
+	fclose(fp);
+	return buffer;
+
+	// And the file stream to read from
+	/* size_t bytesRead = fread(buffer, 1, length, fp); */
+}
