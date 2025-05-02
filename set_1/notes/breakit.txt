@@ -1,0 +1,17 @@
+Functions:
+	-decode_base64(data)
+	-ham(byte1, byte2, length)
+	-norm_ham(ciphertext, keysize, length)
+	-char_xor(byte1, result, length, key)
+
+Steps:
+-	1. Decode base64
+	2. Iterate over keysizes 2-41
+	3. Compute hamming distance of consequtive bytes
+	4. Normalize hamming distance
+	5. Determine best key size
+	6. Break ciphertext into keysize blocks
+	7. Transpose the blocks
+	8. Single char xor each block 
+	9. Combine individual keys to create full key
+	10. Decrypt ciphertext

@@ -1,11 +1,11 @@
 CC=gcc
 CFLAGS=-Wall -Wextra -pedantic
 
-SRC=src/repeated_xor.c
-OBJ_MAIN=src/repeated_xor.o
+SRC=src/6.c
+OBJ_MAIN=src/6.o
 OBJ_FUNC=programs/functions.o
 
-TARGET=repeated_xor
+TARGET=6
 
 all: $(TARGET)
 
