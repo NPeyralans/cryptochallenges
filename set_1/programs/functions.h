@@ -13,6 +13,6 @@ char* xor(unsigned char* byte1, unsigned char* byte2, size_t len);
 int score_text(const unsigned char* text, size_t len);
 int ham(const unsigned char* byte1, const unsigned char* byte2, size_t len);
 float norm_ham(unsigned char* ctext, int keysize, int len);
-int read_file(const char* filename, char* output);
+int read_file(const char* filename, char** output, size_t* size);
 
 #endif

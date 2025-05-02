@@ -3,7 +3,7 @@
 const char base64_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 // Open file 
-int read_file(const char* filename, char* output){
+int read_file(const char* filename, char** output, size_t* size){
 	FILE *fp = fopen(filename, "rb");
 	if (!fp){
 		perror("Failed to open file!\n");
@@ -14,19 +14,26 @@ int read_file(const char* filename, char* output){
 	size_t file_size = ftell(fp);
 	rewind(fp);
 
-	if (!output){
+	char* buffer = malloc(file_size);
+
+	if (!buffer){
 		perror("Memory allocation failed!\n");
 		fclose(fp);
 		return -1;
 	}
 
-	size_t bytes_read = fread(output, 1, file_size, fp);
+	size_t bytes_read = fread(buffer, 1, file_size, fp);
 	fclose(fp);
 
 	if (bytes_read != file_size){
 		perror("Failed to read entire file!\n");
-		free(output);
+		free(buffer);
 		return -1;
+	}
+
+	*output = buffer;
+	if (size){
+		*size = file_size;
 	}
 
 	return 0;

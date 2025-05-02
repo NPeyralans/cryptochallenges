@@ -8,12 +8,15 @@ int main(int argc, char* argv[]){
 
 	// Read file into memory
 	char *base64_input = NULL;
-	int success = read_file(argv[1], base64_input);
-	if (success != 0) perror("Failed to read file!\n");
+	size_t size;
+	if (read_file(argv[1], &base64_input, &size) != 0){
+		fprintf(stderr, "Could not read file!\n");
+		return 1;
+	}
 
 	// Decode base64
-	unsigned char** ciphertext = NULL;
-	int len = base64_decode(base64_input, ciphertext);
+	unsigned char* ciphertext = NULL;
+	int len = base64_decode(base64_input, &ciphertext);
 
 	// Iterate over possible key sizes
 	
